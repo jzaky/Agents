@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: actual-ai-agent-runner
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: NEWS_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: RUNNER_ACCESS_TOKEN
+        generateValue: true
