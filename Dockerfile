@@ -7,13 +7,30 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UPSTREAM_ROOT=/opt/upstream
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git build-essential \
+    && apt-get install -y --no-install-recommends git build-essential curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /srv
-COPY requirements.txt requirements-agents.txt ./
-RUN pip install -r requirements.txt \
-    && pip install -r requirements-agents.txt
+
+COPY requirements.txt requirements-langchain.txt requirements-llama.txt requirements-crewai.txt ./
+
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install -r requirements.txt
+
+RUN python -m venv /opt/venvs/langchain \
+    && /opt/venvs/langchain/bin/pip install --upgrade pip setuptools wheel \
+    && /opt/venvs/langchain/bin/pip install -r requirements-langchain.txt \
+    && /opt/venvs/langchain/bin/pip check
+
+RUN python -m venv /opt/venvs/llama \
+    && /opt/venvs/llama/bin/pip install --upgrade pip setuptools wheel \
+    && /opt/venvs/llama/bin/pip install -r requirements-llama.txt \
+    && /opt/venvs/llama/bin/pip check
+
+RUN python -m venv /opt/venvs/crewai \
+    && /opt/venvs/crewai/bin/pip install --upgrade pip setuptools wheel \
+    && /opt/venvs/crewai/bin/pip install -r requirements-crewai.txt \
+    && /opt/venvs/crewai/bin/pip check
 
 RUN git clone https://github.com/ashishpatel26/500-AI-Agents-Projects.git /opt/upstream \
     && cd /opt/upstream \
