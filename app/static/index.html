@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Actual AI Agent Runner</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07090d;--panel:#0d1219;--panel2:#121923;--line:#253143;--text:#f4f7fb;--muted:#93a1b4;--green:#38d996;--cyan:#34d6ef;--amber:#f7c954;--red:#ff7a8b;--violet:#ad91ff}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 85% 0,#102431 0,transparent 32%),linear-gradient(#07090d,#090d13);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    button,input,textarea,select{font:inherit} button{cursor:pointer}.shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr}.top{height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(7,9,13,.88);backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}.brand{display:flex;gap:11px;align-items:center}.brandmark{width:36px;height:36px;border:1px solid #2c6070;border-radius:8px;display:grid;place-items:center;color:var(--cyan);font-weight:900}.brand strong,.brand small{display:block}.brand small{color:var(--muted);margin-top:2px;font-size:12px}.topactions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;padding:9px 12px}.btn:hover{border-color:#3f526c}.btn.primary{background:var(--text);color:#071016;border-color:var(--text);font-weight:800}.btn.primary:disabled{opacity:.55;cursor:not-allowed}.main{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:calc(100vh - 66px)}.sidebar{border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:calc(100vh - 66px);position:sticky;top:66px}.search{width:100%;border:1px solid var(--line);background:#090d13;color:var(--text);border-radius:8px;padding:11px 12px;outline:none;margin-bottom:12px}.agentlist{display:grid;gap:7px}.agentrow{width:100%;text-align:left;border:1px solid transparent;background:transparent;color:var(--text);padding:11px;border-radius:8px}.agentrow:hover{background:var(--panel)}.agentrow.active{background:#101a21;border-color:#254957}.agentrow strong{display:block;font-size:14px}.agentrow span{color:var(--muted);font-size:12px;margin-top:3px;display:block}.workspace{padding:28px;max-width:1100px;width:100%;margin:0 auto}.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:24px}.eyebrow{color:var(--green);font-weight:900;text-transform:uppercase;font-size:12px;letter-spacing:.08em}.hero h1{font-size:38px;margin:7px 0 8px;letter-spacing:-.03em}.hero p{color:#c2ccda;line-height:1.6;max-width:760px;margin:0}.source{display:inline-flex;margin-top:12px;color:var(--cyan);font-size:13px}.badge{border:1px solid #2e4750;color:var(--cyan);background:#0c171d;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}.grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(340px,1.1fr);gap:18px;align-items:start}.panel{border:1px solid var(--line);background:rgba(13,18,25,.86);border-radius:10px;padding:18px}.panel h2{font-size:16px;margin:0 0 15px}.fields{display:grid;gap:14px}.field{display:grid;gap:7px}.field label{font-size:13px;font-weight:800}.field small{color:var(--muted)}.field input[type=text],.field input[type=number],.field textarea,.field select{width:100%;border:1px solid var(--line);background:#080c12;color:var(--text);border-radius:8px;padding:10px 11px;outline:none}.field textarea{min-height:110px;resize:vertical;line-height:1.5}.field input:focus,.field textarea:focus,.field select:focus{border-color:#3d788a}.filebox{border:1px dashed #36465d;border-radius:8px;padding:12px;background:#090d13}.check{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:8px;padding:11px;background:#090d13}.check.danger{border-color:#664249;background:#180e11}.check input{margin-top:3px}.dangertext{color:#ff9caa;font-size:12px}.keys{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 0}.key{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:5px 7px;color:var(--muted)}.key.ok{color:var(--green);border-color:#235f48}.key.missing{color:var(--amber);border-color:#655423}.runbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px}.status{color:var(--muted);font-size:13px}.terminal{background:#05070a;border:1px solid var(--line);border-radius:8px;overflow:hidden}.terminalhead{display:flex;justify-content:space-between;padding:9px 11px;background:#101720;border-bottom:1px solid var(--line);color:var(--muted);font-size:12px}.terminal pre{margin:0;padding:15px;white-space:pre-wrap;word-break:break-word;max-height:560px;overflow:auto;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}.errors{color:#ff9caa}.files{display:grid;gap:7px;margin-top:14px}.filelink{border:1px solid var(--line);padding:9px 10px;border-radius:8px;color:var(--cyan);font-size:13px}.notice{border:1px solid #42502c;background:#11170b;color:#c9df9a;border-radius:8px;padding:11px 12px;font-size:13px;line-height:1.5;margin-bottom:16px}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;place-items:center;z-index:20;padding:20px}.modalback.open{display:grid}.modal{width:min(620px,100%);background:#0d1219;border:1px solid var(--line);border-radius:10px;padding:19px}.modal h2{margin:0 0 6px}.modal p{color:var(--muted);font-size:13px;line-height:1.5}.modalgrid{display:grid;gap:10px;margin:14px 0}.modalgrid label{display:grid;gap:6px;font-size:12px;font-weight:800}.modalgrid input{border:1px solid var(--line);background:#070a0f;color:var(--text);padding:9px 10px;border-radius:8px}.modalactions{display:flex;justify-content:flex-end;gap:8px}.empty{color:var(--muted);padding:30px;text-align:center}.runtime{font-size:12px;color:var(--muted);margin-top:12px}.runtime b{color:var(--text)}
+    @media(max-width:900px){.main{grid-template-columns:1fr}.sidebar{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}.agentlist{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.workspace{padding:20px}.hero{flex-direction:column}.hero h1{font-size:31px}}
+    @media(max-width:560px){.agentlist{grid-template-columns:1fr}.top{padding:0 12px}.brand small{display:none}.workspace{padding:16px}.topactions .btn:first-child{display:none}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="brandmark">A</div><div><strong>Actual Agent Runner</strong><small>Runs the upstream Python agents</small></div></div>
+    <div class="topactions"><button class="btn" id="healthBtn">Runtime</button><button class="btn" id="settingsBtn">API keys</button></div>
+  </header>
+  <div class="main">
+    <aside class="sidebar"><input class="search" id="search" placeholder="Search 20 runnable agents"/><div class="agentlist" id="agentList"></div></aside>
+    <main class="workspace" id="workspace"><div class="empty">Loading agents...</div></main>
+  </div>
+</div>
+<div class="modalback" id="settingsModal"><div class="modal"><h2>Runtime credentials</h2><p>Server environment variables are preferred. Values entered here stay in this browser session and are sent only with the run request.</p><div class="modalgrid" id="keyInputs"></div><div class="modalgrid"><label>Runner access token (only if you configured RUNNER_ACCESS_TOKEN)<input id="runnerToken" type="password" autocomplete="off" /></label></div><div class="modalactions"><button class="btn" id="closeSettings">Cancel</button><button class="btn primary" id="saveSettings">Save for session</button></div></div></div>
+<script>
+const state={agents:[],configured:{},selected:null};
+const secretKeys=["OPENAI_API_KEY","TAVILY_API_KEY","NEWS_API_KEY","GITHUB_TOKEN"];
+const $=s=>document.querySelector(s);
+function token(){return sessionStorage.getItem("RUNNER_ACCESS_TOKEN")||""}
+function headers(){const t=token();return t?{Authorization:`Bearer ${t}`}:{}}
+function esc(s){return String(s??"").replace(/[&<>\"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+async function loadAgents(){
+  let r=await fetch('/api/agents',{headers:headers()});
+  if(r.status===401){openSettings();$('#workspace').innerHTML='<div class="notice">This runner is protected. Enter the access token in Runtime credentials.</div>';return}
+  if(!r.ok) throw new Error(await r.text());
+  const data=await r.json(); state.agents=data.agents; state.configured=data.configured_keys||{}; state.commit=data.upstream_commit;
+  state.selected=state.agents[0]; renderList(); renderAgent();
+}
+function renderList(q=''){
+  const term=q.toLowerCase(); $('#agentList').innerHTML=state.agents.filter(a=>(a.name+' '+a.framework+' '+a.description).toLowerCase().includes(term)).map(a=>`<button class="agentrow ${state.selected?.id===a.id?'active':''}" data-id="${a.id}"><strong>${esc(a.name)}</strong><span>${esc(a.framework)} | ${esc(a.id)}</span></button>`).join('');
+  document.querySelectorAll('.agentrow').forEach(b=>b.onclick=()=>{state.selected=state.agents.find(a=>a.id===b.dataset.id);renderList($('#search').value);renderAgent()});
+}
+function fieldHtml(f){
+ const v=f.default??''; const req=f.required?' *':'';
+ if(f.type==='textarea')return `<div class="field"><label>${esc(f.label)}${req}</label><textarea name="${f.name}" placeholder="${esc(f.placeholder||'')}">${esc(v)}</textarea></div>`;
+ if(f.type==='select')return `<div class="field"><label>${esc(f.label)}${req}</label><select name="${f.name}">${(f.options||[]).map(o=>`<option value="${esc(o)}" ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
+ if(f.type==='file'||f.type==='multifile')return `<div class="field"><label>${esc(f.label)}${req}</label><div class="filebox"><input name="${f.name}" type="file" ${f.type==='multifile'?'multiple':''} ${f.accept?`accept="${esc(f.accept)}"`:''}/></div></div>`;
+ if(f.type==='checkbox')return `<div class="field"><label class="check ${f.danger?'danger':''}"><input name="${f.name}" type="checkbox"/><span>${esc(f.label)}${req}${f.danger?'<div class="dangertext">This enables the upstream agent\'s explicitly dangerous/write-capable mode.</div>':''}</span></label></div>`;
+ return `<div class="field"><label>${esc(f.label)}${req}</label><input name="${f.name}" type="${f.type==='number'?'number':'text'}" value="${esc(v)}" ${f.min!==undefined?`min="${f.min}"`:''} ${f.max!==undefined?`max="${f.max}"`:''} placeholder="${esc(f.placeholder||'')}"/></div>`;
+}
+function keyStatus(k){const local=sessionStorage.getItem(k); const ok=state.configured[k]||local; return `<span class="key ${ok?'ok':'missing'}">${esc(k)} ${ok?'ready':'missing'}</span>`}
+function renderAgent(){
+ const a=state.selected;if(!a)return;
+ const repo=`https://github.com/ashishpatel26/500-AI-Agents-Projects/tree/${state.commit}/agents/${a.id}`;
+ $('#workspace').innerHTML=`<section class="hero"><div><div class="eyebrow">Actual upstream implementation</div><h1>${esc(a.name)}</h1><p>${esc(a.description)}</p><a class="source" href="${repo}" target="_blank" rel="noreferrer">Open exact source: agents/${esc(a.id)}/agent.py</a><div class="keys">${(a.keys||[]).map(keyStatus).join('')}${(a.optional_keys||[]).map(k=>keyStatus(k).replace(k,`${k} optional`)).join('')}</div></div><span class="badge">${esc(a.framework)}</span></section><div class="notice">This UI does not reimplement the agent. It executes the repository's unchanged <b>agent.py</b> with the inputs below and captures the real process output.</div><div class="grid"><section class="panel"><h2>Inputs</h2><form id="runForm"><div class="fields">${(a.fields||[]).map(fieldHtml).join('')}</div><div class="runbar"><span class="status" id="status">Ready</span><button class="btn primary" id="runBtn" type="submit">Run actual agent</button></div></form><div class="runtime">Source commit: <b>${esc(state.commit)}</b></div></section><section class="panel"><h2>Agent output</h2><div class="terminal"><div class="terminalhead"><span>stdout / stderr</span><span id="exitCode">not run</span></div><pre id="output">Select inputs and run the agent.</pre></div><div class="files" id="files"></div></section></div>`;
+ $('#runForm').onsubmit=runSelected;
+}
+async function runSelected(e){e.preventDefault();const a=state.selected;const form=e.currentTarget;const btn=$('#runBtn');const status=$('#status');const out=$('#output');const fileBox=$('#files');
+ const values={}; const fd=new FormData();
+ for(const f of a.fields||[]){const el=form.elements[f.name];if(!el)continue;
+   if(f.type==='file'||f.type==='multifile'){
+     const arr=[...el.files]; for(const file of arr){const renamed=new File([file],`${f.name}__FIELD__${file.name}`,{type:file.type});fd.append('files',renamed)}
+   }else if(f.type==='checkbox'){values[f.name]=el.checked}else{values[f.name]=el.value}
+ }
+ const secrets={};for(const k of secretKeys){const v=sessionStorage.getItem(k);if(v)secrets[k]=v}
+ fd.append('payload_json',JSON.stringify(values));fd.append('secrets_json',JSON.stringify(secrets));
+ btn.disabled=true;status.textContent='Running...';out.textContent='Starting actual Python agent...';fileBox.innerHTML='';$('#exitCode').textContent='running';
+ try{const r=await fetch(`/api/run/${a.id}`,{method:'POST',body:fd,headers:headers()});const data=await r.json();if(!r.ok)throw new Error(data.detail||JSON.stringify(data));
+   const text=(data.stdout||'')+(data.stderr?`\n\n--- stderr ---\n${data.stderr}`:'');out.textContent=text||'(agent returned no text output)';$('#exitCode').textContent=`exit ${data.exit_code}`;status.textContent=data.exit_code===0?'Completed':'Agent exited with an error';
+   if(data.generated_files?.length){fileBox.innerHTML='<strong>Generated files</strong>'+data.generated_files.map(p=>`<a class="filelink" href="/api/runs/${data.run_id}/files/${encodeURIComponent(p).replaceAll('%2F','/')}" target="_blank">${esc(p)}</a>`).join('')}
+ }catch(err){out.innerHTML=`<span class="errors">${esc(err.message)}</span>`;$('#exitCode').textContent='failed';status.textContent='Failed'}finally{btn.disabled=false}
+}
+function openSettings(){for(const k of secretKeys){const input=document.getElementById(`key-${k}`);if(input)input.value=sessionStorage.getItem(k)||''}$('#runnerToken').value=token();$('#settingsModal').classList.add('open')}
+function initSettings(){ $('#keyInputs').innerHTML=secretKeys.map(k=>`<label>${k}<input id="key-${k}" type="password" autocomplete="off" placeholder="Leave blank to use server environment"/></label>`).join(''); $('#settingsBtn').onclick=openSettings;$('#closeSettings').onclick=()=>$('#settingsModal').classList.remove('open');$('#saveSettings').onclick=()=>{for(const k of secretKeys){const v=document.getElementById(`key-${k}`).value.trim();if(v)sessionStorage.setItem(k,v);else sessionStorage.removeItem(k)}const t=$('#runnerToken').value.trim();if(t)sessionStorage.setItem('RUNNER_ACCESS_TOKEN',t);else sessionStorage.removeItem('RUNNER_ACCESS_TOKEN');$('#settingsModal').classList.remove('open');loadAgents().catch(showFatal)} }
+async function showHealth(){try{const r=await fetch('/api/health');const d=await r.json();alert(`Runtime: ${d.ok?'READY':'NOT READY'}\nAgents: ${d.agent_count}\nCommit: ${d.upstream_commit}\nRoot: ${d.upstream_root}`)}catch(e){alert(e.message)}}
+function showFatal(e){$('#workspace').innerHTML=`<div class="notice">Could not load runner: ${esc(e.message)}</div>`}
+$('#search').oninput=e=>renderList(e.target.value);$('#healthBtn').onclick=showHealth;initSettings();loadAgents().catch(showFatal);
+</script>
+</body>
+</html>
