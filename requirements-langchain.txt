@@ -1,0 +1,16 @@
+langchain==0.3.20
+langchain-core==0.3.44
+langchain-openai==0.2.10
+langchain-tavily==0.1.5
+langgraph==0.2.76
+langchain-community==0.3.19
+langchain-experimental==0.3.4
+langchain-text-splitters==0.3.6
+python-dotenv==1.0.1
+requests==2.32.3
+pandas==2.2.0
+openpyxl==3.1.5
+pypdf==4.3.1
+yfinance==0.2.44
+faiss-cpu==1.9.0
+pytest==8.3.0
