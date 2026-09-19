@@ -1,20 +1,25 @@
-langchain==0.3.0
-langchain-core==0.3.0
-langchain-openai==0.2.0
-langchain-tavily==0.1.0
-langgraph==0.2.0
+# Compatible LangChain 0.3.x stack.
+# langchain-tavily 0.1.0 is no longer published; 0.1.5 requires
+# langchain>=0.3.20 and langchain-core>=0.3.15.
+langchain==0.3.20
+langchain-core==0.3.44
+langchain-openai==0.2.10
+langchain-tavily==0.1.5
+langgraph==0.2.76
+langchain-community==0.3.19
+langchain-experimental==0.3.4
+langchain-text-splitters==0.3.6
+
+# Upstream agent dependencies
 python-dotenv==1.0.1
 llama-index==0.11.0
 llama-index-llms-openai==0.3.0
 llama-index-embeddings-openai==0.3.0
-langchain-community==0.3.0
 crewai==0.80.0
 requests==2.32.3
-langchain-experimental==0.3.0
 pandas==2.2.0
 openpyxl==3.1.5
 pypdf==4.3.1
 yfinance==0.2.44
-langchain-text-splitters==0.3.0
 faiss-cpu==1.9.0
 pytest==8.3.0
