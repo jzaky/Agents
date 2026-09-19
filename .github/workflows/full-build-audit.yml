@@ -1,0 +1,77 @@
+name: Full runner build audit
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".audit/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and smoke test
+        shell: bash
+        run: |
+          set +e
+          mkdir -p .audit
+          LOG=.audit/latest.log
+          : > "$LOG"
+
+          echo "=== Docker build ===" | tee -a "$LOG"
+          docker build --progress=plain -t actual-agent-runner:audit . 2>&1 | tee -a "$LOG"
+          BUILD_RC=${PIPESTATUS[0]}
+
+          if [ "$BUILD_RC" -ne 0 ]; then
+            echo "AUDIT_RESULT=BUILD_FAILED" | tee -a "$LOG"
+            echo "build_failed" > .audit/status.txt
+          else
+            echo "=== Agent import/CLI smoke tests ===" | tee -a "$LOG"
+            docker run --rm --entrypoint sh actual-agent-runner:audit -c '
+              set -e
+              for f in /opt/upstream/agents/*/agent.py; do
+                echo "--- $f ---"
+                timeout 30 python "$f" --help >/tmp/agent-help.log 2>&1 || {
+                  cat /tmp/agent-help.log
+                  exit 1
+                }
+              done
+            ' 2>&1 | tee -a "$LOG"
+            AGENT_RC=${PIPESTATUS[0]}
+
+            if [ "$AGENT_RC" -ne 0 ]; then
+              echo "AUDIT_RESULT=AGENT_SMOKE_FAILED" | tee -a "$LOG"
+              echo "agent_smoke_failed" > .audit/status.txt
+            else
+              echo "=== API health smoke test ===" | tee -a "$LOG"
+              CID=$(docker run -d -e RUNNER_ACCESS_TOKEN=audit-token -p 18080:8080 actual-agent-runner:audit)
+              sleep 5
+              curl -fsS http://127.0.0.1:18080/api/health 2>&1 | tee -a "$LOG"
+              API_RC=${PIPESTATUS[0]}
+              if [ "$API_RC" -ne 0 ]; then
+                docker logs "$CID" 2>&1 | tee -a "$LOG"
+                echo "AUDIT_RESULT=API_HEALTH_FAILED" | tee -a "$LOG"
+                echo "api_health_failed" > .audit/status.txt
+              else
+                echo | tee -a "$LOG"
+                echo "AUDIT_RESULT=SUCCESS" | tee -a "$LOG"
+                echo "success" > .audit/status.txt
+              fi
+              docker rm -f "$CID" >/dev/null 2>&1
+            fi
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .audit/latest.log .audit/status.txt
+          git diff --cached --quiet || git commit -m "Update full build audit"
+          git push
+
+          exit 0
