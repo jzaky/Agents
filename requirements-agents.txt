@@ -13,8 +13,8 @@ langchain-text-splitters==0.3.6
 # Upstream agent dependencies
 python-dotenv==1.0.1
 llama-index==0.11.0
-llama-index-llms-openai==0.3.0
-llama-index-embeddings-openai==0.3.0
+llama-index-llms-openai==0.2.0
+llama-index-embeddings-openai==0.2.0
 crewai==0.80.0
 requests==2.32.3
 pandas==2.2.0
