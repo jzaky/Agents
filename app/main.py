@@ -122,8 +122,20 @@ def validate_fields(agent: dict[str, Any], values: dict[str, Any], uploads: dict
             raise HTTPException(status_code=422, detail=f"Provide one of: {', '.join(one_of)}")
 
 
+CREWAI_AGENTS = {"05-email-drafting-agent", "12-travel-planner-agent", "14-social-media-agent", "18-job-application-agent"}
+
+def agent_python(agent_id: str) -> str:
+    if agent_id == "03-pdf-qa-agent":
+        path = Path("/opt/venvs/llama/bin/python")
+    elif agent_id in CREWAI_AGENTS:
+        path = Path("/opt/venvs/crewai/bin/python")
+    else:
+        path = Path("/opt/venvs/langchain/bin/python")
+    return str(path) if path.exists() else sys.executable
+
+
 def build_command(agent: dict[str, Any], values: dict[str, Any], uploads: dict[str, list[Path]], workspace: Path) -> tuple[list[str], str | None]:
-    cmd = [sys.executable, "agent.py"]
+    cmd = [agent_python(agent["id"]), "agent.py"]
     stdin_data = None
 
     for field in agent.get("fields", []):
